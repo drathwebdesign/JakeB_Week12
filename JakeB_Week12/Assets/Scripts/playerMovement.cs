@@ -6,13 +6,15 @@ using UnityEngine.UI;
 
 public class playerMovement : MonoBehaviour
 {
-    [SerializeField] float moveSpeed;
+    [SerializeField] float moveSpeed =5f;
     public Vector2 inputDirection,lookDirection;
     Animator anim;
 
     private Vector3 touchStart, touchEnd;
     public Image dPad;
     public float dPadRadius = 15;
+
+    Touch theTouch;
 
     // Start is called before the first frame update
     void Start()
@@ -22,14 +24,15 @@ public class playerMovement : MonoBehaviour
         lookDirection = new Vector2(0, -1);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //calculateDesktopInputs();
-
-        //calculateMobileInput();
-
+#if UNITY_EDITOR
+        calculateDesktopInputs();
+#elif UNITY_ANDROID || UNITY_WEBGL
+        calculateMobileInput();
+#elif UNITY_IOS
         calculateTouchInputs();
+#endif
 
         //sets up the animator
         animationSetup();
@@ -37,7 +40,6 @@ public class playerMovement : MonoBehaviour
         //moves the player
         transform.Translate(inputDirection * moveSpeed * Time.deltaTime);
     }
-
 
     void calculateDesktopInputs()
     {
@@ -144,5 +146,33 @@ public class playerMovement : MonoBehaviour
     public void attack()
     {
         anim.SetTrigger("Attack");
+    }
+
+    public IEnumerator ScaleIncrease(float multiplier, float duration) {
+        // Store the original scale
+        Vector3 originalScale = transform.localScale;
+
+        // Increase the scale
+        transform.localScale *= multiplier;
+
+        // Wait for the duration of the effect
+        yield return new WaitForSeconds(duration);
+
+        // Revert back to the original scale
+        transform.localScale = originalScale;
+    }
+
+    public IEnumerator SpeedIncrease(float multiplier, float duration) {
+        // Store the original move speed
+        float originalSpeed = moveSpeed;
+
+        // Increase the speed
+        moveSpeed *= multiplier;
+
+        // Wait for the duration of the effect
+        yield return new WaitForSeconds(duration);
+
+        // Revert back to the original speed
+        moveSpeed = originalSpeed;
     }
 }
