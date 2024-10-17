@@ -6,7 +6,7 @@ using UnityEngine;
 public class PotionData : ScriptableObject {
     public string potionName;
     public Color potionColor;
-    public enum EffectType { ScaleIncrease, SpeedIncrease }
+    public enum EffectType { ScaleIncrease, SpeedIncrease, HealthRestore }
     public EffectType effectType;
     public float effectValue;
     public float effectDuration;

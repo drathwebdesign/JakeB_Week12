@@ -14,6 +14,11 @@ public class playerMovement : MonoBehaviour
     public Image dPad;
     public float dPadRadius = 15;
 
+    // Health variables
+    public float maxHealth = 100f;
+    private float currentHealth;
+    public Slider healthSlider;
+
     Touch theTouch;
 
     // Start is called before the first frame update
@@ -22,6 +27,10 @@ public class playerMovement : MonoBehaviour
         anim = GetComponent<Animator>();
         //makes the character look down by default
         lookDirection = new Vector2(0, -1);
+
+        currentHealth = maxHealth;
+        healthSlider.maxValue = maxHealth;
+        healthSlider.value = currentHealth;
     }
 
     void Update()
@@ -149,30 +158,45 @@ public class playerMovement : MonoBehaviour
     }
 
     public IEnumerator ScaleIncrease(float multiplier, float duration) {
-        // Store the original scale
         Vector3 originalScale = transform.localScale;
 
-        // Increase the scale
         transform.localScale *= multiplier;
 
-        // Wait for the duration of the effect
         yield return new WaitForSeconds(duration);
 
-        // Revert back to the original scale
         transform.localScale = originalScale;
     }
 
     public IEnumerator SpeedIncrease(float multiplier, float duration) {
-        // Store the original move speed
         float originalSpeed = moveSpeed;
 
-        // Increase the speed
         moveSpeed *= multiplier;
 
-        // Wait for the duration of the effect
         yield return new WaitForSeconds(duration);
 
-        // Revert back to the original speed
         moveSpeed = originalSpeed;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.CompareTag("Enemy")) {
+            TakeDamage(20f);
+        }
+    }
+
+    void TakeDamage(float damage) {
+        currentHealth -= damage;
+        healthSlider.value = currentHealth;
+
+        if (currentHealth <= 0) {
+            Debug.Log("Player Died!");
+        }
+    }
+
+    public void RestoreHealth(float amount) {
+        currentHealth += amount;
+        if (currentHealth > maxHealth) {
+            currentHealth = maxHealth;
+        }
+        healthSlider.value = currentHealth;
     }
 }

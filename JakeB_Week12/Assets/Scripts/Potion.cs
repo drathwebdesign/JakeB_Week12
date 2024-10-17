@@ -31,6 +31,9 @@ public class Potion : MonoBehaviour {
             case PotionData.EffectType.SpeedIncrease:
                 player.StartCoroutine(player.SpeedIncrease(potionEffect.effectValue, potionEffect.effectDuration));
                 break;
+            case PotionData.EffectType.HealthRestore:
+                player.RestoreHealth(potionEffect.effectValue);  // Add health restoration effect
+                break;
         }
     }
 }
